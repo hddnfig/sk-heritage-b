@@ -87,7 +87,6 @@ const stories = [
 ];
 
 export function App() {
-  const exhibitTrack = useRef(null);
   const storyTrack = useRef(null);
   const [languageOpen, setLanguageOpen] = useState(false);
   const [historyStep, setHistoryStep] = useState(0);
@@ -140,12 +139,22 @@ export function App() {
         <img src="/assets/hero.png" alt="뉴욕 도심에 선 젊은 최종현 선대회장" />
         <div className="hero-shade" />
         <div className="hero-word hero-word-left">
-          <span className="hero-word-mask"><b className="hero-word-line">鮮</b></span>
+          <span className="hero-word-mask">
+            <b className="hero-word-line hero-glyph-swap" aria-label="S">
+              <span className="hero-glyph hero-glyph-original" aria-hidden="true">鮮</span>
+              <span className="hero-glyph hero-glyph-letter" aria-hidden="true">S</span>
+            </b>
+          </span>
           <span className="hero-word-mask"><span className="hero-word-line hero-word-korean">선</span></span>
           <span className="hero-word-mask"><small className="hero-word-line">BEAUTIFUL</small></span>
         </div>
         <div className="hero-word hero-word-right">
-          <span className="hero-word-mask"><b className="hero-word-line">京</b></span>
+          <span className="hero-word-mask">
+            <b className="hero-word-line hero-glyph-swap" aria-label="K">
+              <span className="hero-glyph hero-glyph-original" aria-hidden="true">京</span>
+              <span className="hero-glyph hero-glyph-letter" aria-hidden="true">K</span>
+            </b>
+          </span>
           <span className="hero-word-mask"><span className="hero-word-line hero-word-korean">경</span></span>
           <span className="hero-word-mask"><small className="hero-word-line">PLACES</small></span>
         </div>
@@ -242,18 +251,14 @@ export function App() {
           <a className="dark-button motion-control" href="#stories" data-reveal><span className="reveal-line">전시 모두 보기 <ArrowRight size={16} /></span></a>
         </div>
         <div className="exhibit-rail-wrap">
-          <div className="exhibit-rail" ref={exhibitTrack}>
+          <div className="exhibit-rail">
             {exhibits.map((item) => (
               <article className="exhibit-card" key={item.image}>
-                <div className="exhibit-image"><img src={item.image} alt={item.title} /></div>
+                <div className="exhibit-image"><img src={item.image} alt={item.title} draggable="false" /></div>
                 <RevealLines as="h3" lines={[item.title]} />
                 <RevealLines as="p" lines={item.copy.split(/(?<=\.)\s+/)} />
               </article>
             ))}
-          </div>
-          <div className="rail-controls" aria-label="전시 슬라이드 이동">
-            <button onClick={() => scrollTrack(exhibitTrack, -1)} aria-label="이전 전시"><CaretLeft /></button>
-            <span /><button onClick={() => scrollTrack(exhibitTrack, 1)} aria-label="다음 전시"><CaretRight /></button>
           </div>
         </div>
       </section>
