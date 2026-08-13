@@ -6,7 +6,9 @@ Before making substantial visual changes, use the Product Design plugin's `get-c
 
 When implementing from a selected generated mock, treat that image as the source of truth for layout, component anatomy, density, spacing, color, typography, visible content, and hierarchy.
 
-The user requires an exact 1920px-faithful recreation of `public/assets/reference.png`, not an approximate interpretation. Use the supplied original image assets without stylistic substitution.
+The current visual source of truth is the supplied 1920px-wide full-page artwork `/Users/lptable/Desktop/1클래식_메인홈.png`. Preserve its section order and vertical rhythm: hero, Beautiful Places, History, Object, memorial banner, story rail, and the dark gray brand footer. Use the supplied original image assets without stylistic substitution.
+
+Beautiful Places uses a warm beige editorial stage with two narrow side previews and one large featured place. History imagery is grayscale. Object cards show the supplied monochrome asset by default and crossfade to the paired color asset on hover. The footer must use the supplied `SK Heritage` logo raster rather than recreating the mark in CSS or text.
 
 Motion direction: use a subtle first-entry hero background zoom and Kononenko-style line masks (`translateY(101%)` to rest) for site text. Keep the main hero horizontal line free of this motion because it will receive a separate interaction later.
 
