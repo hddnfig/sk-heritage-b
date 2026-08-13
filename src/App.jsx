@@ -45,6 +45,7 @@ const stories = [
 
 export function App() {
   const placeStage = useRef(null);
+  const objectViewport = useRef(null);
   const [languageOpen, setLanguageOpen] = useState(false);
   const [historyStep, setHistoryStep] = useState(0);
   const [objectStep, setObjectStep] = useState(0);
@@ -74,10 +75,29 @@ export function App() {
     return () => observer.disconnect();
   }, []);
 
+  useEffect(() => {
+    const viewport = objectViewport.current;
+    if (!viewport) return undefined;
+    const updateObjectShift = () => {
+      const grid = viewport.querySelector(".object-grid");
+      if (!grid) return;
+      const endShift = Math.max(0, grid.scrollWidth - viewport.clientWidth);
+      viewport.style.setProperty("--object-end-shift", `${endShift}px`);
+    };
+    updateObjectShift();
+    const observer = new ResizeObserver(updateObjectShift);
+    observer.observe(viewport);
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <main className="site-shell">
       <header className="topbar">
-        <a className="brand" href="#top"><RevealInline delay={350}><strong>SK</strong> Heritage</RevealInline></a>
+        <a className="brand" href="#top">
+          <RevealInline delay={350}>
+            <img className="brand-lockup-image" src={asset("sk-heritage-lockup.png")} alt="SK Heritage" />
+          </RevealInline>
+        </a>
         <nav className="main-nav" aria-label="주요 메뉴">
           <a href="#history"><RevealInline delay={450}>그룹 역사</RevealInline></a>
           <a href="#places"><RevealInline delay={500}>SK 헤리티지관</RevealInline></a>
@@ -112,7 +132,10 @@ export function App() {
 
       <section id="places" className="places-section">
         <div className="places-heading"><RevealLines as="h2" lines={["Beautiful", "Places"]} /><RevealLines as="p" lines={["SK 그룹의 역사가 고스란히 살아있는", "아름다운 장소와 공간"]} /></div>
-        <div className="places-seal"><strong>鮮京</strong><span>선 [BEAUTIFUL]&nbsp;&nbsp;&nbsp; 경 [PLACES]</span></div>
+        <div className="places-seal">
+          <RevealLines as="strong" className="places-seal-title" lines={["鮮京"]} />
+          <RevealLines as="span" className="places-seal-caption" lines={["선 [BEAUTIFUL]   경 [PLACES]"]} delay={180} />
+        </div>
         <div className="places-stage" ref={placeStage}>
           {places.map((item, index) => (
             <article
@@ -159,7 +182,7 @@ export function App() {
         <div className="object-head"><RevealLines as="h2" lines={["Object"]} /><div className="object-controls"><button aria-label="이전 오브젝트" disabled={objectStep === 0} onClick={() => setObjectStep(0)}><CaretLeft /></button><button aria-label="다음 오브젝트" disabled={objectStep === 1} onClick={() => setObjectStep(1)}><CaretRight /></button></div></div>
         <div className="object-layout">
           <div className="object-intro"><RevealLines as="p" lines={["도전과 혁신으로 가득했던", "SK그룹의 주요 성장 이야기와 담긴", "유물과 주요 물품들을 살펴보세요."]} /><a className="dark-button" href="#stories">전시 모두 보기 <ArrowRight /></a></div>
-          <div className="object-viewport"><div className={`object-grid step-${objectStep}`}>{objects.map((item) => <article className="object-card" key={item.title}><div className="object-image"><img className="object-mono" src={item.mono} alt={item.title} /><img className="object-color" src={item.color} alt="" /></div><RevealLines as="h3" lines={[item.title]} /><RevealLines as="p" lines={[item.copy]} /></article>)}</div></div>
+          <div className="object-viewport" ref={objectViewport}><div className={`object-grid step-${objectStep}`}>{objects.map((item) => <article className="object-card" key={item.title}><div className="object-image"><img className="object-mono" src={item.mono} alt={item.title} /><img className="object-color" src={item.color} alt="" /></div><RevealLines as="h3" lines={[item.title]} /><RevealLines as="p" lines={[item.copy]} /></article>)}</div></div>
         </div>
       </section>
 
@@ -180,7 +203,7 @@ export function App() {
         </div>
       </section>
 
-      <footer id="footer" className="footer-new"><RevealLines as="h2" lines={["한 세대의 신념이,", "다음 시대의 가치로."]} /><p>Built through time. Carried into tomorrow.</p><img src={asset("sk-heritage-logo.png")} alt="SK Heritage" /><small>© SK HERITAGE MUSEUM, All Rights Reserved.</small></footer>
+      <footer id="footer" className="footer-new"><RevealLines as="h2" lines={["한 세대의 신념이,", "다음 시대의 가치로."]} /><p>Built through time. Carried into tomorrow.</p><img className="footer-lockup-image" src={asset("sk-heritage-lockup.png")} alt="SK Heritage" /><small>© SK HERITAGE MUSEUM, All Rights Reserved.</small></footer>
     </main>
   );
 }
