@@ -25,7 +25,7 @@ const heroRays = [
 const places = [
   { code: "S1", label: "SK 기념관", image: "/assets/place-memorial.png", title: "두 거목의 정신을 기리는 곳, SK기념관", category: "경기도 용인시 처인구 원삼면", copy: "실제 선경직물 수원공장 관리동을 이전·복원한 추모관을 중심으로, 최종건 창업회장과 최종현 선대회장의 일대기와 유품, 경영철학을 통해 오늘의 SK를 만든 도전의 역사를 전합니다.", cta: "SK기념관 자세히보기" },
   { code: "S2", label: "SK 선혜원", image: "/assets/place-sunhye.png", title: "시간이 머무는 집, 선혜원", category: "서울 종로구 선혜원", copy: "1968년, SK 창업주의 사저로 시작된 선혜원은 전통 한옥과 현대 건축, 예술이 어우러지는 새로운 문화 공간으로 이어지고 있습니다.", cta: "선혜원 자세히보기" },
-  { code: "S3", label: "SK 고택", image: "/assets/place-gotaek.png", title: "창업의 뿌리가 살아있는 집, SK고택", category: "경기도 수원시 권선구 평동", copy: "최종건 창업회장과 최종현 선대회장이 태어나 성장한 생가를 복원한 공간입니다. 1950~1960년대의 생활상과 두 경영인의 기업가정신을 담아 2024년 기념관으로 문을 열었습니다.", cta: "SK고택 자세히보기" },
+  { code: "S3", label: "SK 고택", image: "/assets/place-gotaek.png", title: "창업의 뿌리가\n살아있는 집\nSK고택", category: "경기도 수원시 권선구 평동", copy: "최종건 창업회장과 최종현 선대회장이 태어나 성장한 생가를 복원한 공간입니다. 1950~1960년대의 생활상과 두 경영인의 기업가정신을 담아 2024년 기념관으로 문을 열었습니다.", cta: "SK고택 자세히보기" },
 ];
 
 const objects = [
@@ -42,10 +42,11 @@ const stories = [
 ];
 
 export function App() {
-  const storyTrack = useRef(null);
   const placeStage = useRef(null);
   const [languageOpen, setLanguageOpen] = useState(false);
   const [historyStep, setHistoryStep] = useState(0);
+  const [objectStep, setObjectStep] = useState(0);
+  const [storyStep, setStoryStep] = useState(0);
   const [placeIndex, setPlaceIndex] = useState(1);
   const [placesEntered, setPlacesEntered] = useState(false);
 
@@ -71,7 +72,6 @@ export function App() {
     return () => observer.disconnect();
   }, []);
 
-  const scrollStories = (direction) => storyTrack.current?.scrollBy({ left: direction * 520, behavior: "smooth" });
   return (
     <main className="site-shell">
       <header className="topbar">
@@ -125,7 +125,7 @@ export function App() {
             >
               <div className="place-card-media"><span>{item.label}</span><img src={item.image} alt={item.label} /></div>
               <div className="place-copy">
-                <h3>{item.title.split(", ").map((line, lineIndex) => <span className="place-text-mask" key={line}><span className="place-text-line" style={{ "--place-line": lineIndex }}>{line}</span></span>)}</h3>
+                <h3>{item.title.split(/\n|,\s*/).map((line, lineIndex) => <span className="place-text-mask" key={`${line}-${lineIndex}`}><span className="place-text-line" style={{ "--place-line": lineIndex }}>{line}</span></span>)}</h3>
                 <div className="place-text-mask place-meta-mask"><b className="place-text-line" style={{ "--place-line": 2 }}>{item.category}</b></div>
                 <div className="place-text-mask place-description-mask"><p className="place-text-line" style={{ "--place-line": 3 }}>{item.copy}</p></div>
                 <div className="place-text-mask place-cta-mask"><button className="place-text-line" style={{ "--place-line": 4 }} tabIndex={placeIndex === index ? 0 : -1}>{item.cta} <ArrowRight /></button></div>
@@ -154,16 +154,29 @@ export function App() {
       </section>
 
       <section id="objects" className="object-section">
-        <div className="object-head"><RevealLines as="h2" lines={["Object"]} /><div className="object-controls"><button><CaretLeft /></button><button><CaretRight /></button></div></div>
+        <div className="object-head"><RevealLines as="h2" lines={["Object"]} /><div className="object-controls"><button aria-label="이전 오브젝트" disabled={objectStep === 0} onClick={() => setObjectStep(0)}><CaretLeft /></button><button aria-label="다음 오브젝트" disabled={objectStep === 1} onClick={() => setObjectStep(1)}><CaretRight /></button></div></div>
         <div className="object-layout">
           <div className="object-intro"><RevealLines as="p" lines={["도전과 혁신으로 가득했던", "SK그룹의 주요 성장 이야기와 담긴", "유물과 주요 물품들을 살펴보세요."]} /><a className="dark-button" href="#stories">전시 모두 보기 <ArrowRight /></a></div>
-          <div className="object-grid">{objects.map((item) => <article className="object-card" key={item.title}><div className="object-image"><img className="object-mono" src={item.mono} alt={item.title} /><img className="object-color" src={item.color} alt="" /></div><RevealLines as="h3" lines={[item.title]} /><RevealLines as="p" lines={[item.copy]} /></article>)}</div>
+          <div className="object-viewport"><div className={`object-grid step-${objectStep}`}>{objects.map((item) => <article className="object-card" key={item.title}><div className="object-image"><img className="object-mono" src={item.mono} alt={item.title} /><img className="object-color" src={item.color} alt="" /></div><RevealLines as="h3" lines={[item.title]} /><RevealLines as="p" lines={[item.copy]} /></article>)}</div></div>
         </div>
       </section>
 
-      <section className="legacy-banner"><img src="/assets/legacy-new.png" alt="SK 생산 현장을 둘러보는 선대회장" /><div className="legacy-overlay" /><div className="legacy-content"><RevealLines as="h2" lines={["SK의 역사와 창업회장, 선대회장의 정신을 되새겨 봅니다."]} /><RevealLines as="p" lines={["한 세대의 뿌리와 도전의 정신을 되짚으며", "오늘의 SK를 만들어낸 사람과 생각을 기억합니다."]} /><a className="frost-button" href="#stories">추모 갤러리 <ArrowRight /></a></div></section>
+      <section className="legacy-banner"><img src="/assets/legacy-new.png" alt="SK 생산 현장을 둘러보는 선대회장" /><div className="legacy-overlay" /><div className="legacy-content"><RevealLines as="h2" lines={["SK의 역사와 창업회장, 선대회장의 정신을 되새겨 봅니다."]} /><RevealLines as="p" lines={["한국 경제의 두 거목 최종건 창업회장, 최종현 선대회장.", "불굴의 도전정신과 열정의 발자취를 따라가고,", "SK그룹의 역사와 경영철학의 계승, 발전을 다짐봅니다."]} /><a className="frost-button" href="#stories">추모 갤러리 <ArrowRight /></a></div></section>
 
-      <section id="stories" className="story-section"><div className="story-head"><RevealLines as="h2" lines={["끝없는 역사를 써내려가는 SK 그룹의", "이야기 조각들을 살펴보세요."]} /><div><button onClick={() => scrollStories(-1)}><CaretLeft /></button><button onClick={() => scrollStories(1)}><CaretRight /></button></div></div><div className="story-rail" ref={storyTrack}>{stories.map((story, index) => <article className="story-card" key={index}><div className="story-image"><img src={story.image} alt="" /></div><RevealLines as="p" lines={[story.copy]} /><RevealLines as="h3" lines={story.title.split("\n")} /></article>)}</div></section>
+      <section id="stories" className="story-section">
+        <div className="story-head">
+          <RevealLines as="h2" lines={["끝없는 역사를 써내려가는 SK 그룹의", "이야기 조각들을 살펴보세요."]} />
+          <div>
+            <button aria-label="이전 이야기" disabled={storyStep === -1} onClick={() => setStoryStep((step) => Math.max(-1, step - 1))}><CaretLeft /></button>
+            <button aria-label="다음 이야기" disabled={storyStep === 1} onClick={() => setStoryStep((step) => Math.min(1, step + 1))}><CaretRight /></button>
+          </div>
+        </div>
+        <div className="story-viewport">
+          <div className={`story-rail story-step-${storyStep === -1 ? "left" : storyStep === 1 ? "right" : "center"}`}>
+            {stories.map((story, index) => <article className="story-card" key={index}><div className="story-image"><img src={story.image} alt="" /></div><RevealLines as="p" lines={[story.copy]} /><RevealLines as="h3" lines={story.title.split("\n")} /></article>)}
+          </div>
+        </div>
+      </section>
 
       <footer id="footer" className="footer-new"><RevealLines as="h2" lines={["한 세대의 신념이,", "다음 시대의 가치로."]} /><p>Built through time. Carried into tomorrow.</p><img src="/assets/sk-heritage-logo.png" alt="SK Heritage" /><small>© SK HERITAGE MUSEUM, All Rights Reserved.</small></footer>
     </main>
