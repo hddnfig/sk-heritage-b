@@ -203,7 +203,7 @@ export function App() {
         </div>
       </section>
 
-      <footer id="footer" className="footer-new"><RevealLines as="h2" lines={["한 세대의 신념이,", "다음 시대의 가치로."]} /><p>Built through time. Carried into tomorrow.</p><img className="footer-lockup-image" src={asset("sk-heritage-lockup.png")} alt="SK Heritage" /><small>© SK HERITAGE MUSEUM, All Rights Reserved.</small></footer>
+      <footer id="footer" className="footer-new"><RevealLines as="h2" lines={["한 세대의 신념이,", "다음 시대의 가치로."]} /><p>Built through time. Carried into tomorrow.</p><img className="footer-lockup-image" src={asset("sk-heritage-lockup.png")} alt="SK Heritage" /><small>© SK HERITAGE, All Rights Reserved.</small></footer>
     </main>
   );
 }
